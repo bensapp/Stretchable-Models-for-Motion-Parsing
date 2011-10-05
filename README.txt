@@ -6,11 +6,11 @@ Code version 1.0, October 4, 2011.
 !! Download
 This project is hosted on github.  To obtain, run the command
 
-$ git clone git://github.com/bensapp/Stretchable-Models
+$ git clone git://github.com/bensapp/Stretchable-Models-for-Motion-Parsing.git
 
 from a console or download a static copy from 
 
-https://github.com/bensapp/Stretchable-Models/zipball/master
+https://github.com/bensapp/Stretchable-Models-for-Motion-Parsing/zipball/master
 
 
 !! Usage
