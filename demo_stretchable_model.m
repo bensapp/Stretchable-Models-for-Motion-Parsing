@@ -1,28 +1,29 @@
-function demo_stretchable_model(filenames,torsoboxes)
-%% startup
+%% set paths
 addpath utils boxutils
 addpath inference models features
 addpath discretization-info
 addpath(genpath('cps'))
 addpath(genpath('thirdparty'))
 
-opts.datadir = '/scratch/bensapp/tmp2/';
-opts.imgdims = [333 370];
+%% options: where you want all the temporary files saved:
+opts.datadir = '/scratch/bensapp/tmp3/';
 
-%%
-if nargin == 0
-%%
-    files = dir3('example/*.jpg');
-    filenames = {files.filepath};
-    torsoboxes = load('example/torsoboxes.txt');
-    
-    % show input video with labeled torsos
-    for i=1:length(filenames)
-        cla, imagesc(imread(filenames{i})), 
-        axis image, hold on
-        plotbox(torsoboxes(i,:),'w-');
-        drawnow
-    end
+% shouldn't change these without re-learning a model
+opts.imgdims = [333 370];
+opts.larmlens = [17 32 47 66];
+
+%% input: a list of filenames and array of bounding boxes (format [x1 y1 x2 y2]), as shown here:
+files = dir3('example/*.jpg');
+filenames = {files.filepath};
+torsoboxes = load('example/torsoboxes.txt');
+
+% show input video with labeled torsos
+for i=1:length(filenames)
+    cla, imagesc(imread(filenames{i})),
+    axis image, hold on
+    plotbox(torsoboxes(i,:),'w-');
+    title('Input')
+    drawnow
 end
     
 %% crop out person, resize to standard img dims
@@ -34,7 +35,8 @@ videoclip = normalizeImages(filenames,torsoboxes,opts);
 clf
 for i=1:length(videoclip)
     cla, imagesc(imread(videoclip(i).imgfile)), 
-    axis image, drawnow
+    axis image, title('Scale and Translation Normalized')
+    drawnow
 end
     
 
@@ -44,23 +46,22 @@ for i=1:length(videoclip)
    runCPS(opts,videoclip(i));
 end
 
-% precompute a couple more sources of features 
-
-% flow (takes 15-20 seconds per frame-pair)
+%% precompute a couple more sources of features 
+%% flow (takes 15-20 seconds per frame-pair)
 for i=1:length(videoclip)
     tic
    computeFlow(videoclip(i),imread(videoclip(min(end-1,i)).imgfile_orig),imread(videoclip(min(end,i+1)).imgfile_orig),opts)
    toc
 end
 
-% hand dets (1.7 seconds / frame)
+%% hand dets (1.7 seconds / frame)
 for i=1:length(videoclip)
    tic
    computeHandDetectors(videoclip(i),opts)
    toc
 end
 
-% compute all node and edge features
+%% compute all model node and edge features from all feature sources (1 minute / frame)
 [nodeInfo edgeInfo] = computeStatesAndFeatures(videoclip, opts)
 
 %% inference 
@@ -81,9 +82,11 @@ end
 guesses = smoothSequence(nodeInfo(1).dims,guesses);
 
 for i=1:length(videoclip)
+    cla
     imagesc(imread(videoclip(i).imgfile)), axis image
     hold on
-    plotMAPdecode(nodeInfo, guesses, i, nodeInfo(1).imgdims,'y.-','linewidth',3,'markersize',20);
-    pause
+    plotMaxMarginals(nodeInfo, max_marginals, i, nodeInfo(1).imgdims);
+    plotMAPdecode(nodeInfo, guesses, i, nodeInfo(1).imgdims,'w-','linewidth',5,'markersize',20);
+    pause(0.25)
     drawnow
 end

@@ -7,12 +7,7 @@ frames = [armstate_infos.currframe];
 
 idx = find(tidx==t);
 
-% figure(1); clf,
-%   img = imread(armtracking_root('jpg-torso-cropped', armstate_infos(idx(1)).moviename, ...
-%       sprintf('%08d.jpg', armstate_infos(idx(1)).currframe)));
-%  imagesc(img); axis image;
 
-% plot two arms
 p = [5 3 1 2 4 6];
 
 dims = armstate_infos(idx(1)).dims;
@@ -53,19 +48,3 @@ elseif 0
     end
 end
 hold off;
-
-
-% 
-% filestem = getFeatureFileStem(armstate_infos(idx(1)));
-% fginfo = load([filestem '_fg_color_detmaps.mat']);
-% 
-% face_smooth = scale01(blurimg(fginfo.face_color, 3));
-% torso_smooth = scale01(blurimg(fginfo.torso_color, 3));
-% figure(2);
-% subplot(1,2,1);
-% imagesc(face_smooth); 
-% axis image;
-% subplot(1,2,2);
-% imagesc(torso_smooth);
-% axis image;
-% 
