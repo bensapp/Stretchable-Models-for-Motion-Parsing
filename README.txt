@@ -14,7 +14,7 @@ https://github.com/bensapp/Stretchable-Models-for-Motion-Parsing/zipball/master
 
 
 !! Usage
-To run on a new image, see @@demo_stretchable_model.m@@
+To run on a new image, see @@demo_stretchable_model.m@@.  If everything goes according to plan, your output should look like the animated gif example-output.gif in the base directory.
 
 The required input is a sequence of video filenames and a list of torso detection boxes; see the example input in @@demo_stretchable_model.m@@.  The code then computes a variety of features, runs the [[Cascaded Pictorial Structures code]], and performs the simplest, most efficient of our tree ensemble inference methods.  See our paper
 

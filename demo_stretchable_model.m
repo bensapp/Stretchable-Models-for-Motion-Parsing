@@ -87,6 +87,5 @@ for i=1:length(videoclip)
     hold on
     plotMaxMarginals(nodeInfo, max_marginals, i, nodeInfo(1).imgdims);
     plotMAPdecode(nodeInfo, guesses, i, nodeInfo(1).imgdims,'w-','linewidth',5,'markersize',20);
-    pause(0.25)
     drawnow
 end
